@@ -1,18 +1,19 @@
 """ Driver for Leoni eol/mol 1xn fibre switches """
 
-import socket
+import pyvisa
 
 
 class LeoniSwitch:
-    def __init__(self, ip_addr, simulation=False):
+    def __init__(self, serial_addr, simulation=False):
 
         self.simulation = simulation
         if simulation:
             self._num_channels = 16
             return
 
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((ip_addr, 10001))
+        self.rm = pyvisa.ResourceManager()
+        self.dev = self.rm.open_resource(serial_addr)
+        self.dev.baud_rate = 57600
 
         self._num_channels = None
         self.get_num_channels()
@@ -23,9 +24,7 @@ class LeoniSwitch:
             return 16
 
         if self._num_channels is None:
-            self.sock.send("type?\r\n".encode())
-            with self.sock.makefile() as stream:
-                resp = stream.readline().strip()  # "eol 1xn"
+            resp = self.dev.query("type?").strip()
             assert resp.startswith("eol 1x") or resp.startswith("mol 1x")
             self._num_channels = int(resp[6:])
         return self._num_channels
@@ -39,7 +38,7 @@ class LeoniSwitch:
             raise ValueError('Channel out of bounds')
         if self.simulation:
             return
-        self.sock.send("ch{}\r\n".format(channel).encode())
+        self.dev.write("ch{}".format(channel))
 
     def get_active_channel(self):
         """ Returns the active channel number
@@ -48,18 +47,16 @@ class LeoniSwitch:
         if self.simulation:
             return 1
 
-        self.sock.send("ch?\r\n".encode())
-        with self.sock.makefile() as stream:
-            return int(stream.readline().strip())
+        resp = self.dev.query("ch?")
+        return int(resp.strip())
 
     def get_firmware_rev(self):
         """ Returns a firmware revision string, such as 'v8.09' """
         if self.simulation:
             return "Leoni fibre switch simulator"
 
-        self.sock.send("firmware?\r\n".encode())
-        with self.sock.makefile() as stream:
-            return stream.readline().strip()
+        resp = self.dev.query("firmware?")
+        return resp.strip()
 
     def ping(self):
         if self.simulation:
@@ -69,4 +66,4 @@ class LeoniSwitch:
     def close(self):
         if self.simulation:
             return
-        self.sock.close()
+        self.dev.close()
