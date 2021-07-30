@@ -48,6 +48,8 @@ class WLM:
         lib.SetExposureModeNum.argtypes = [c_long, c_bool]
         lib.GetFrequencyNum.restype = c_double
         lib.GetFrequencyNum.argtypes = [c_long, c_double]
+        lib.GetWavelengthNum.restype = c_double
+        lib.GetWavelengthNum.argtypes = [c_long, c_double]
 
         # Check the WLM server application is running and start it if necessary
         if not lib.Instantiate(wlm.cInstCheckForWLM, 0, 0, 0):
@@ -320,20 +322,21 @@ class WLM:
         try:
             self._get_fresh_data()
             freq = self.lib.GetFrequencyNum(self.active_switch_ch, 0)
+            wavelength = self.lib.GetWavelengthNum(self.active_switch_ch, 0)
         except WLMException as e:
             logger.error("error during frequency read: {}".format(e))
-            return WLMMeasurementStatus.ERROR, 0
+            return WLMMeasurementStatus.ERROR, 0, 0
 
         if freq > 0:
-            return WLMMeasurementStatus.OKAY, freq * 1e12
+            return WLMMeasurementStatus.OKAY, freq * 1e12, wavelength * 1e-9
         elif freq == wlm.ErrBigSignal:
-            return WLMMeasurementStatus.OVER_EXPOSED, 0
+            return WLMMeasurementStatus.OVER_EXPOSED, 0, 0
         elif freq == wlm.ErrLowSignal:
-            return WLMMeasurementStatus.UNDER_EXPOSED, 0
+            return WLMMeasurementStatus.UNDER_EXPOSED, 0, 0
         else:
             logger.error("error getting frequency: {}"
                          .format(wlm.error_to_str(freq)))
-            return WLMMeasurementStatus.ERROR, 0
+            return WLMMeasurementStatus.ERROR, 0, 0
 
     def get_exposure_min(self):
         """ Returns the minimum exposure times in ms """
