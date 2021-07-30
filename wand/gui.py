@@ -375,6 +375,7 @@ class LaserDisplay:
     def update_freq(self):
 
         freq = self._gui.freq_db[self.laser]["freq"]
+        wavelength = self._gui.freq_db[self.laser]["wavelength"]
         status = self._gui.freq_db[self.laser]["status"]
 
         if status == WLMMeasurementStatus.OKAY:
@@ -389,7 +390,7 @@ class LaserDisplay:
                 detuning = "-"
             else:
                 detuning = "{:.1f}".format((freq - f_ref) / 1e6)
-            freq = "{:.7f} THz".format(freq / 1e12)
+            freq = "{:.7f} THz / {:5f} nm".format(freq / 1e12, wavelength*1e9)
         elif status == WLMMeasurementStatus.UNDER_EXPOSED:
             freq = "-"
             detuning = "Low"

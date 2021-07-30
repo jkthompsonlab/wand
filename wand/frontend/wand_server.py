@@ -124,6 +124,7 @@ class WandServer:
         self.laser_db = Notifier(self.config["lasers"])
         self.freq_db = Notifier({laser: {
             "freq": None,
+            "wavelength": None,
             "status": WLMMeasurementStatus.ERROR,
             "timestamp": 0
         } for laser in self.lasers})
@@ -382,9 +383,10 @@ class WandServer:
         """ Preform a single frequency measurement """
         logger.info("Taking new frequency measurement for {}".format(laser))
 
-        status, freq = self.wlm.get_frequency()
+        status, freq, wavelength = self.wlm.get_frequency()
         freq = {
             "freq": freq,
+            "wavelength": wavelength,
             "status": int(status),
             "timestamp": time.time()
         }
@@ -415,9 +417,10 @@ class WandServer:
         logger.info("Taking new frequency + spectral measurement for {}"
                     .format(laser))
 
-        status, freq = self.wlm.get_frequency()
+        status, freq, wavelength = self.wlm.get_frequency()
         freq = {
             "freq": freq,
+            "wavelength": wavelength,
             "status": int(status),
             "timestamp": time.time()
         }
@@ -446,7 +449,7 @@ class WandServer:
             config_path, _ = get_config_path(self.args, "_server")
             pyon.store_file(config_path, self.config)
         except Exception:
-            log.warning("error when trying to save config data")
+            logger.warning("error when trying to save config data")
 
 
 def main():
