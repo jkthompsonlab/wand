@@ -305,13 +305,13 @@ class WLM:
         logger.debug("...done")
 
     def get_frequency(self):
-        """ Returns the frequency of the active channel.
+        """ Returns the frequency and wavelength of the active channel.
 
         The frequency measurement is guaranteed to occur after this method is
         called. See :meth _get_fresh_data: for details.
 
-        :returns: the tuple (status, frequency) where status is a
-          WLMMeasurementStatus and frequency is in Hz.
+        :returns: the tuple (status, frequency, wavelength) where status is a
+          WLMMeasurementStatus, frequency is in Hz and wavelength in m.
         """
         if self.simulation:
             return 0, WLMMeasurementStatus.OKAY
