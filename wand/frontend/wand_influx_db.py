@@ -31,13 +31,7 @@ def get_argparser():
                         default="lasers")
     influx.add_argument("--host-db",
                         help="InfluxDB host name (default: '%(default)s')",
-                        default="10.255.6.4")
-    influx.add_argument("--user-db",
-                        help="InfluxDB username (default: '%(default)s')",
-                        default="admin")
-    influx.add_argument("--password-db",
-                        help="InfluxDB password (default: '%(default)s')",
-                        default="admin")
+                        default="128.138.107.173")
     parser.add_argument("--timeout",
                         help=("timeout for RPC connection to servers, in seconds " +
                               "(default: %(default)s s)"),
@@ -95,9 +89,7 @@ def main():
 
         try:
             influx = influxdb.InfluxDBClient(host=args.host_db,
-                                             database=args.database,
-                                             username=args.user_db,
-                                             password=args.password_db)
+                                             database=args.database)
 
             influx.write_points(measurements)
         finally:
