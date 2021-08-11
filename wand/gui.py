@@ -38,10 +38,10 @@ class LaserDisplay:
         self.colour = "ffffff"  # will be set later depending on laser colour
 
         self.detuning = pg.LabelItem("")
-        self.detuning.setText("-", color="ffffff", size="64pt")
+        self.detuning.setText("-", color="ffffff", size="48pt")
 
         self.frequency = pg.LabelItem("")
-        self.frequency.setText("-", color="ffffff", size="12pt")
+        self.frequency.setText("-", color="ffffff", size="32pt")
 
         self.name = pg.LabelItem("")
         self.name.setText(display_name, color="ffffff", size="32pt")
@@ -390,7 +390,8 @@ class LaserDisplay:
                 detuning = "-"
             else:
                 detuning = "{:.1f}".format((freq - f_ref) / 1e6)
-            freq = "{:.7f} THz / {:5f} nm".format(freq / 1e12, wavelength*1e9)
+            # freq = "{:.4f} THz / {:.4f} nm".format(freq / 1e12, wavelength*1e9)
+            freq = "{:.4f} nm".format(wavelength*1e9)
         elif status == WLMMeasurementStatus.UNDER_EXPOSED:
             freq = "-"
             detuning = "Low"
