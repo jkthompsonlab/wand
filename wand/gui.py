@@ -38,13 +38,13 @@ class LaserDisplay:
         self.colour = "ffffff"  # will be set later depending on laser colour
 
         self.detuning = pg.LabelItem("")
-        self.detuning.setText("-", color="ffffff", size="48pt")
+        self.detuning.setText("-", color="ffffff", size="32pt")
 
         self.frequency = pg.LabelItem("")
-        self.frequency.setText("-", color="ffffff", size="32pt")
+        self.frequency.setText("-", color="ffffff", size="24pt")
 
         self.name = pg.LabelItem("")
-        self.name.setText(display_name, color="ffffff", size="32pt")
+        self.name.setText(display_name, color="ffffff", size="24pt")
 
         self.osa = pg.PlotItem()
         self.osa.hideAxis('bottom')
@@ -170,7 +170,7 @@ class LaserDisplay:
 
             self.name.setText(self.display_name,
                               color=self.colour,
-                              size="32pt")
+                              size="24pt")
 
             try:
                 exp_min = await self.client.get_min_exposures()
