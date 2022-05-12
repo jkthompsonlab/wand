@@ -23,7 +23,7 @@ def get_argparser():
                         "--poll-time",
                         help="time between log updates (s) (default: '%(default)s')",
                         type=int,
-                        default=300)
+                        default=60)
     influx = parser.add_argument_group("InfluxDB")
     influx.add_argument("-db",
                         "--database",
@@ -31,7 +31,7 @@ def get_argparser():
                         default="lasers")
     influx.add_argument("--host-db",
                         help="InfluxDB host name (default: '%(default)s')",
-                        default="128.138.107.173")
+                        default="128.138.107.201")
     parser.add_argument("--timeout",
                         help=("timeout for RPC connection to servers, in seconds " +
                               "(default: %(default)s s)"),
